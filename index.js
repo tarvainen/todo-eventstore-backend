@@ -26,7 +26,7 @@ fastify.get('/todo/:todoId', async req =>
 )
 
 fastify.get('/todo', async () =>
-  await store.getAll()
+  store.getAll()
 )
 
 fastify.delete('/todo/:todoId', async req =>
@@ -67,24 +67,24 @@ todoEvents.process(async event => {
   switch (event.data.type) {
     case 'todoCreated': {
       const todo = event.data
-      delete todo.type;
+      delete todo.type
 
       store.save(todo)
-      break;
+      break
     }
     case 'todoUpdated': {
-      const todo = event.data;
-      delete todo.type;
+      const todo = event.data
+      delete todo.type
 
       // We want viewmodel to contain only not done todos
       if (todo.state === 'done') {
-        break;
+        break
       }
 
       const existingTodo = await store.getById(todo.id)
 
-      store.save({ ...existingTodo, ...todo });
-      break;
+      store.save({ ...existingTodo, ...todo })
+      break
     }
     case 'todoMarkedAsDone': {
       const todo = event.data

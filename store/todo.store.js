@@ -33,8 +33,6 @@ const store = {
   delete: async (id) => {
     await db.srem('objects:all', id)
     await db.del(`objects:${id}`)
-
-    console.log('deleted ' + id)
   }
 }
 
