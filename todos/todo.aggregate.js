@@ -52,24 +52,43 @@ class TodoAggregate {
     this.description = payload.description
     this.state = 'todo'
     this.createdAt = payload.time
+
+    return [
+      { type: 'todoCreated', ...this }
+    ]
   }
 
   _assignTodo (payload) {
     this.state = 'in-progress'
     this.modifiedAt = payload.time
     this.assignee = payload.assignee || 'unknown'
+
+    return [
+      { type: 'todoAssigned', ...this },
+      { type: 'todoUpdated', ...this }
+    ]
   }
 
   _dismissTodo (payload) {
     this.state = 'todo'
     this.modifiedAt = payload.time
     delete this.assignee
+
+    return [
+      { type: 'todoDismissed', ...this },
+      { type: 'todoUpdated', ...this }
+    ]
   }
 
   _markAsDone (payload) {
     this.state = 'done'
     this.modifiedAt = payload.time
     this.comment = payload.comment
+
+    return [
+      { type: 'todoMarkedAsDone', ...this },
+      { type: 'todoUpdated', ...this }
+    ]
   }
 }
 

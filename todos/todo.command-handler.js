@@ -1,5 +1,6 @@
 const TodoAggregate = require('./todo.aggregate')
 const eventstore = require('../eventstore/eventstore')
+const { dispatchMany } = require('../messaging/event-bus')
 
 const handleCommand = async (command, allowCreate = false) => {
   const { payload } = command
@@ -16,10 +17,12 @@ const handleCommand = async (command, allowCreate = false) => {
 
   aggregate.loadFromHistory(stream.events)
 
-  aggregate.apply(command)
+  const domainEvents = aggregate.apply(command)
 
   stream.addEvent(command)
   stream.commit()
+
+  dispatchMany(domainEvents)
 
   return aggregate
 }
